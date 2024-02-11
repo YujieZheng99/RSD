@@ -8,6 +8,7 @@ This repo was tested with Ubuntu 20.04.4 LTS, Python 3.7.13, PyTorch 1.8.0, and 
 
 Due to the paper being under review, the training code will be provided later.
 Now the accuracy of the model can be validated based on the provided checkpoint files. 
+Our checkpoints are at https://github.com/YujieZheng99/RSD/releases/tag/checkpoints
 
 ## Validation:
 ```
