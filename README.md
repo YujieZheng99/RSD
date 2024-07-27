@@ -2,7 +2,7 @@
 
 ## Installation
 
-This repo was tested with Ubuntu 20.04.4 LTS, Python 3.7.13, PyTorch 1.8.0, and CUDA 11.1.
+This repo was tested with Ubuntu 20.04.3 LTS, Python 3.7.13, PyTorch 1.8.0, and CUDA 11.1.
 | Package | Version (CIFAR) | Version (ImageNet) |
 | ------ | ------ | ------ |
 | h5py | 3.11.0 | 3.11.0 |
