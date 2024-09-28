@@ -11,7 +11,7 @@ parser.add_argument('--save', metavar='SAVE', help='path to the weights file',
                     default='save/student_model/repWRN20_8_cifar100_lr_0.05_decay_0.0005_trial_1/repWRN20_8_deploy.pth')
 parser.add_argument('-a', '--arch', metavar='ARCH', default='repWRN20_8',
                     choices=['repvgg16', 'repvgg19', 'repResNet32', 'repResNet110', 'repWRN20_8', 'repDenseNet40_12'])
-parser.add_argument('-t', '--blocktype', metavar='BLK', default='AMBB', choices=['base', 'AMBB'])
+parser.add_argument('-t', '--blocktype', metavar='BLK', default='AMBB', choices=['AMBB'])
 
 
 def convert():
