@@ -15,6 +15,26 @@ def conv_bn(in_channels, out_channels, kernel_size, stride=1, padding=0, dilatio
     return se
 
 
+def drop_path(x, drop_prob: float = 0., training: bool = False):
+    if drop_prob == 0. or not training: 
+        return x
+    keep_prob = 1 - drop_prob  
+    shape = (x.shape[0],) + (1,) * (x.ndim - 1)  
+    random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype, device=x.device) 
+    random_tensor.floor_()  
+    output = x.div(keep_prob) * random_tensor 
+    return output  
+
+
+class DropPath(nn.Module):
+    def __init__(self, drop_prob=None):
+        super(DropPath, self).__init__()
+        self.drop_prob = drop_prob
+
+    def forward(self, x):
+        return drop_path(x, self.drop_prob, self.training)
+
+
 class AMBB(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size,
                  stride=1, padding=0, dilation=1, groups=1,
@@ -22,6 +42,7 @@ class AMBB(nn.Module):
         super(AMBB, self).__init__()
 
         self.deploy = deploy
+        self.drop = DropPath(drop_prob=0.0)
 
         if nonlinear is None:
             self.nonlinear = nn.Identity()
@@ -119,9 +140,13 @@ class AMBB(nn.Module):
         self.tdb_reparam.weight.data = deploy_k
         self.tdb_reparam.bias.data = deploy_b
 
+    def switch_drop(self, drop_prob):
+        self.drop = DropPath(drop_prob=drop_prob)
+
     def forward(self, inputs):
         if hasattr(self, 'tdb_reparam'):
             return self.nonlinear(self.tdb_reparam(inputs))
 
-        return self.nonlinear(self.duplicate1(inputs) + self.duplicate2(inputs) + self.duplicate3(inputs) + \
-                               self.ver_bn(self.ver_conv(inputs)) + self.hor_bn(self.hor_conv(inputs)))
+        return self.nonlinear(self.drop(self.duplicate1(inputs)) + self.drop(self.duplicate2(inputs)) + self.drop(self.duplicate3(inputs)) + \
+                              self.drop(self.ver_bn(self.ver_conv(inputs))) + self.drop(self.hor_bn(self.hor_conv(inputs))))
+
